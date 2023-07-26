@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  web:
+    build : ./Frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - network1 
+    restart: always
+    depends_on:
+      - server
+  
+  db:
+    image: "postgres:9"
+    ports:  
+      - "5432:5432"
+    networks:
+      - network1
+    restart: always
+    environment:
+      POSTGRES_USER : postgres
+      POSTGRES_PASSWORD : postgres
+      POSTGRES_DB : backend_server
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  server:
+    build : ./Backend
+    ports: 
+      - "8080:8080"
+    networks:
+      - network1
+    depends_on:
+      - db 
+    restart : always
+
+networks:
+  network1:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver : local 
