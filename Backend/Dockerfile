@@ -10,4 +10,6 @@ COPY . .
 RUN cargo install diesel_cli --no-default-features --features postgres
 RUN chmod +x ./initialize_backend.sh
 
+EXPOSE 8080
+
 CMD [ "./initialize_backend.sh" ]

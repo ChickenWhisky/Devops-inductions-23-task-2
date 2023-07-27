@@ -1,3 +1,4 @@
+
 //To actually use them
 mod services { 
     //Adding pub makes it public and we can use the functions in the file
@@ -19,7 +20,9 @@ use crate::services::endpoints::{
     create_new_user,get_all_present_user,
     get_some_user,update_particular_user,
     delete_particular_user,login_user};
-// use crate::services::endpoints::get_user;
+
+use actix_cors::Cors;
+    // use crate::services::endpoints::get_user;
 use crate::services::db::get_connection_pool;
 
 async fn index() -> impl Responder {
@@ -50,9 +53,10 @@ async fn main() -> std::io::Result<()> {
                 error::InternalError::from_response(err, HttpResponse::Conflict().finish())
                     .into()
             });
-
+        let cors = Cors::permissive();
         App::new()
             .wrap(middleware::Logger::default())
+            .wrap(cors)
             .app_data(json_config)
             .app_data(web::Data::new(pool.clone()))
             .service(create_new_user)
